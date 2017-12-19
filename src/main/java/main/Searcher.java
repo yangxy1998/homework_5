@@ -39,6 +39,5 @@ public final class Searcher {
         FileHandler fileHandler = SearchManager.getFileHandler();
         fileHandler.program2File(programs);
 
-
     }
 }

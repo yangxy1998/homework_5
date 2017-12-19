@@ -62,11 +62,11 @@ public class Manager {
                         //匹配项目名
                         Pattern forProgamName = Pattern.compile("<h1 class=\"section-hero-title section-title\">(.*?)</h1>");
                         //匹配项目主页
-                        Pattern forHomepage = Pattern.compile("<div class=\"menu-item black-button\"><a href=\"(.*?)\">Apply <i class");
+                        Pattern forHomepage = Pattern.compile("<div class=\"menu-item black-button\"> <a href=\"(.*?)\">Apply <i class");
                         //匹配地址
-                        Pattern forLocation = Pattern.compile("<div class=\"valign\"> <div class=\"bullet-item-value\">(.*?)</div> </div> </div> <div class=\"bullet-item-bottom sub-title\" data-same-height-group=\"bullet-item-bottom\"> <div class=\"valign\"> <div class=\"small bullet-item-label\"> Location </div>");
+                        Pattern forLocation = Pattern.compile("<div class=\"valign\"> <div class=\"bullet-item-value\"> (.*?) </div> </div> </div> <div class=\"bullet-item-bottom sub-title\" data-same-height-group=\"bullet-item-bottom\"> <div class=\"valign\"> <div class=\"small bullet-item-label\"> Location </div>");
                         //匹配学位信息
-                        Pattern forDegreeList = Pattern.compile("<div class=\"dropdown-item-wrapper\"> (.*?)  </i> <span class=\"title\">");
+                        Pattern forDegreeList = Pattern.compile("<div class=\"dropdown-item-wrapper\"> (.*?) </i> <span class=\"title\">");
                         Pattern forDegree = Pattern.compile("(<i class=\"icon icon-nav-(.+?)\">  </i> )*(<i class=\"icon icon-nav-(.+?)\">)");
                         //匹配截止日期
                         Pattern forDeadLine = Pattern.compile("<h3>Admissions Dates</h3>(.*?)<div>");
@@ -129,8 +129,7 @@ public class Manager {
                         //设置截止日期
                         matcher = forDeadLine.matcher(html);
                         if (matcher.find()) {
-                            String ddl = matcher.group(1);
-                            //替换所有标签
+                            String ddl=matcher.group(1);
                             ddl = ddl.replace("&nbsp;", " ");
                             ddl=ddl.replaceAll("<.*?>"," ");
                             program.setDeadlineWithAid(ddl);

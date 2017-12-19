@@ -1,6 +1,9 @@
 package search.impl;
 
 
+import org.jsoup.Connection;
+import org.jsoup.Jsoup;
+
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -96,18 +99,26 @@ public class HtmlHandler {
 
         /**爬取网页信息，返回整个网页所有的文本信息**/
         private String getHtml(Matcher matcher) throws Exception{
-            BufferedReader inhtml=null;
+            /**改进代码，使用Jsoup**/
             String result=matcher.group(1);
             result=result.replace("\\","");
-            URL readHTML=new URL(result);
-            URLConnection connecthtml=readHTML.openConnection();
-            connecthtml.connect();
-            inhtml=new BufferedReader(new InputStreamReader(connecthtml.getInputStream()));
-            String lineText;
-            String html="";
-            while ((lineText = inhtml.readLine()) != null){
-                html+=lineText;
-            }
+            Connection connection= Jsoup.connect(result).userAgent("Mozilla/5.0 (Windows NT 5.1; zh-CN) AppleWebKit/535.12 (KHTML, like Gecko) Chrome/22.0.1229.79 Safari/535.12");
+            String html=connection.get().outerHtml();
+            html=html.replaceAll("( )+"," ");
+            html=html.replace("\n","");
+            html=html.replaceAll("( )+"," ");
+            /**原版代码
+             * BufferedReader inhtml=null;
+             * URL readHTML=new URL(result);
+             * URLConnection connecthtml=readHTML.openConnection();
+             * connecthtml.connect();
+             * inhtml=new BufferedReader(new InputStreamReader(connecthtml.getInputStream()));
+             * String lineText;
+             * String html="";
+             * while ((lineText = inhtml.readLine()) != null){
+             * html+=lineText;
+             * }
+             * **/
             return html;
         }
     }

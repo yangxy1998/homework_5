@@ -4,10 +4,6 @@ package search.impl;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -17,16 +13,16 @@ public class HtmlHandler {
     private volatile List<String> list=new ArrayList<>();
     private volatile List<MyThread> threads=new ArrayList<>();
     public void setListFromUrl(String url) throws Exception{
-        BufferedReader inhtml=null;
-        URL readURL=new URL(url);
-        URLConnection connection=readURL.openConnection();
-        connection.connect();
-        inhtml=new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        String pageline;
-        while ((pageline = inhtml.readLine()) != null)
-        {
-            setListFromLine(pageline);
+
+        Connection connection= Jsoup.connect(url)
+                .ignoreContentType(true)
+                .userAgent("Mozilla/5.0 (Windows NT 5.1; zh-CN; rv:1.9.1.3) Gecko/20100101 Firefox/8.0");
+        String html=connection.get().outerHtml();
+        String[] lines=html.split("ID");
+        for(String pageLine:lines){
+            setListFromLine(pageLine);
         }
+
     }
 
     public void setListFromLine(String pageLine) throws Exception{
@@ -67,19 +63,17 @@ public class HtmlHandler {
         }
         @Override
         public void run() {
-            if(mode==1){//线程运行模式：获取项目列表，并开始子线程爬取网页信息
-                Pattern pattern=Pattern.compile("\"link\":\"(.*?)\"");//要抓取的内容
-                String[] line=pageLine.split("ID");
-                List<MyThread> threads=new ArrayList<>();
-                for(int j=0;j<line.length;j++){
-                    Matcher matcher=pattern.matcher(line[j]);
-                    if(matcher.find()){
-                        MyThread myThread=new MyThread(matcher);
-                        myThread.start();
-                        threads.add(myThread);
-                    }
+            if(mode==1) {//线程运行模式：获取项目列表，并开始子线程爬取网页信息
+                Pattern pattern = Pattern.compile("\"link\":\"(.*?)\"");//要抓取的内容
+                String[] line = pageLine.split("ID");
+                List<MyThread> threads = new ArrayList<>();
+                Matcher matcher = pattern.matcher(pageLine);
+                if (matcher.find()) {
+                    MyThread myThread = new MyThread(matcher);
+                    myThread.start();
+                    threads.add(myThread);
                 }
-                for(MyThread thread:threads){
+                for (MyThread thread : threads) {
                     try {
                         thread.join();
                     } catch (InterruptedException e) {
@@ -107,18 +101,19 @@ public class HtmlHandler {
             html=html.replaceAll("( )+"," ");
             html=html.replace("\n","");
             html=html.replaceAll("( )+"," ");
-            /**原版代码
-             * BufferedReader inhtml=null;
-             * URL readHTML=new URL(result);
-             * URLConnection connecthtml=readHTML.openConnection();
-             * connecthtml.connect();
-             * inhtml=new BufferedReader(new InputStreamReader(connecthtml.getInputStream()));
-             * String lineText;
-             * String html="";
-             * while ((lineText = inhtml.readLine()) != null){
-             * html+=lineText;
-             * }
-             * **/
+            /**原版代码**/
+//            String result=matcher.group(1);
+//            result=result.replace("\\","");
+//            BufferedReader inhtml=null;
+//            URL readHTML=new URL(result);
+//            URLConnection connecthtml=readHTML.openConnection();
+//            connecthtml.connect();
+//            inhtml=new BufferedReader(new InputStreamReader(connecthtml.getInputStream()));
+//            String lineText;
+//            String html="";
+//            while ((lineText = inhtml.readLine()) != null){
+//                html+=lineText;
+//            }
             return html;
         }
     }

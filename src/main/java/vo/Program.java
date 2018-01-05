@@ -135,4 +135,18 @@ public class Program implements Serializable{
     public void setCountry(String country) {
         this.country = country;
     }
+
+    public String getAll(){
+        return country+"\t"+
+                university+"\t"+
+                school+"\t"+
+                programName+"\t"+
+                homepage+"\t"+
+                location+"\t"+
+                phoneNumber+"\t"+
+                degree+"\t"+
+                deadlineWithAid+"\t"+
+                deadlineWithoutAid;
+    }
+
 }

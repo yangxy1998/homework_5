@@ -74,7 +74,7 @@ public class Manager {
                         Program program = new Program();
                         //设置标识id
                         String forId= UUID.randomUUID().toString();
-                        program.setId(forId);
+                        program.setId(forId.replace("-",""));
                         //设置国家
                         program.setCountry("United States");
                         //设置学校名
